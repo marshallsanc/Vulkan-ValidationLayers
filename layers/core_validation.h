@@ -62,6 +62,11 @@ struct DrawDispatchVuid {
     const char* sampler_bias_offset;
     const char* vertex_binding_attribute;
     const char* dynamic_state_setting_commands;
+    const char* unprotected_command_buffer;
+    const char* protected_command_buffer;
+    const char* maxMultiviewInstanceIndex;  // TODO: Some instance values are in VkBuffer.The validation in those Cmds is skipped.
+    const char* filterCubic;
+    const char* filterCubicMinmax;
 };
 
 typedef struct {
@@ -152,13 +157,13 @@ class CoreChecks : public ValidationStateTracker {
                                         const VkDeviceQueueCreateInfo* infos) const;
 
     bool ValidateProtectedImage(const CMD_BUFFER_STATE* cb_state, const IMAGE_STATE* image_state, const char* cmd_name,
-                                const char* vuid) const;
+                                const char* vuid, std::string more_message = "") const;
     bool ValidateUnprotectedImage(const CMD_BUFFER_STATE* cb_state, const IMAGE_STATE* image_state, const char* cmd_name,
-                                  const char* vuid) const;
+                                  const char* vuid, std::string more_message = "") const;
     bool ValidateProtectedBuffer(const CMD_BUFFER_STATE* cb_state, const BUFFER_STATE* buffer_state, const char* cmd_name,
-                                 const char* vuid) const;
+                                 const char* vuid, std::string more_message = "") const;
     bool ValidateUnprotectedBuffer(const CMD_BUFFER_STATE* cb_state, const BUFFER_STATE* buffer_state, const char* cmd_name,
-                                   const char* vuid) const;
+                                   const char* vuid, std::string more_message = "") const;
 
     bool ValidatePipelineVertexDivisors(std::vector<std::shared_ptr<PIPELINE_STATE>> const& pipe_state_vec, const uint32_t count,
                                         const VkGraphicsPipelineCreateInfo* pipe_cis) const;
@@ -495,7 +500,8 @@ class CoreChecks : public ValidationStateTracker {
                                                               const char* variable_name) const;
     template <typename RegionType>
     bool ValidateBufferImageCopyData(const CMD_BUFFER_STATE* cb_node, uint32_t regionCount, const RegionType* pRegions,
-                                     const IMAGE_STATE* image_state, const char* function, CopyCommandVersion version, bool image_to_buffer) const;
+                                     const IMAGE_STATE* image_state, const char* function, CopyCommandVersion version,
+                                     bool image_to_buffer) const;
     bool ValidateBufferViewRange(const BUFFER_STATE* buffer_state, const VkBufferViewCreateInfo* pCreateInfo,
                                  const VkPhysicalDeviceLimits* device_limits) const;
     bool ValidateBufferViewBuffer(const BUFFER_STATE* buffer_state, const VkBufferViewCreateInfo* pCreateInfo) const;
