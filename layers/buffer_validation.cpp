@@ -359,35 +359,27 @@ IMAGE_VIEW_STATE::IMAGE_VIEW_STATE(const std::shared_ptr<IMAGE_STATE> &im, VkIma
 }
 
 bool IMAGE_VIEW_STATE::OverlapSubresource(const IMAGE_VIEW_STATE &compare_view) const {
-    if (image_view == compare_view.image_view) {
-        return true;
-    }
-    if (image_state->image != compare_view.image_state->image) {
-        return false;
-    }
-    if (normalized_subresource_range.aspectMask != compare_view.normalized_subresource_range.aspectMask) {
-        return false;
+    if (image_view == compare_view.image_view) { return true; }
+    if (image_state->image != compare_view.image_state->image) { return false; } if (normalized_subresource_range.aspectMask != compare_view.normalized_subresource_range.aspectMask) { return false;
     }
 
     // compare if overlap mip level
     if ((normalized_subresource_range.baseMipLevel < compare_view.normalized_subresource_range.baseMipLevel) &&
         ((normalized_subresource_range.baseMipLevel + normalized_subresource_range.levelCount) <=
-         compare_view.normalized_subresource_range.baseMipLevel)) {
-        return false;
+         compare_view.normalized_subresource_range.baseMipLevel)) { return false;
     }
 
     if ((normalized_subresource_range.baseMipLevel > compare_view.normalized_subresource_range.baseMipLevel) &&
         (normalized_subresource_range.baseMipLevel >=
          (compare_view.normalized_subresource_range.baseMipLevel + compare_view.normalized_subresource_range.levelCount))) {
-        return false;
-    }
+        return false; }
 
     // compare if overlap array layer
     if ((normalized_subresource_range.baseArrayLayer < compare_view.normalized_subresource_range.baseArrayLayer) &&
         ((normalized_subresource_range.baseArrayLayer + normalized_subresource_range.layerCount) <=
          compare_view.normalized_subresource_range.baseArrayLayer)) {
         return false;
-    }
+    		}
 
     if ((normalized_subresource_range.baseArrayLayer > compare_view.normalized_subresource_range.baseArrayLayer) &&
         (normalized_subresource_range.baseArrayLayer >=
